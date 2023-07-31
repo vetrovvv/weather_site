@@ -1,0 +1,117 @@
+{% extends 'flatpages/default.html' %} 
+{% load static %}
+{% load custom_filters %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+<h2>{{error}}</h2>
+
+{%if weather.count  > 0 %}
+<h2>Погода в городе {{city}} на <br>{{date|date_format}} </h2>
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+      function drawStuff() {
+        var tmp = ({{array|safe}});
+        var data = new google.visualization.arrayToDataTable(tmp);
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0,1]);
+
+
+        var options = {
+          width: 800,
+          legend: { position: 'none' },
+          chart: {
+            title: 'Температурные показатели в городе {{city}} сегодня',
+             },
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Время'} // Top x-axis.
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+
+
+var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        chart.draw(view, google.charts.Bar.convertOptions(options));
+
+
+
+function selectHandler() {
+  var selectedItem = chart.getSelection()[0];
+  if (selectedItem) {
+    var topping = data.getValue(selectedItem.row, 2);
+    
+    window.location.replace("{{request.path}}" + topping + '/');
+          }
+        };
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);    
+        chart.draw(view, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="top_x_div" style="width: 900px; height: 500px"></div>
+  </body>
+</html>
+{%else%}
+<h2>Нет данных по погоде в городе {{city}} на <br>{{date|date_format}} </h2>
+{%endif%}
+<div class="w_search">
+  <h2><a href="{{request.path}}delete/">Удалить город</a></h2>
+  <h2><a href="{{request.path}}update/">Изменить город</a></h2>
+  <h2><a href="{{request.path}}weather_create/">Добавить данные о температуре</a></h2>
+
+<h2>Другие дни</h2>
+
+<form  method="POST" >
+	{% csrf_token %} 
+	{{ form.date }}
+
+
+	<input class="btn" type="submit" value="Найти">
+</form>
+<a class="main_menu_a" href="{% url 'cities' %}">Другие города</a>
+</div>
+
+
+
+
+<!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+  <script>
+
+
+$(function () {
+	$("#id_date").datepicker({
+		format:'dd.mm.yyyy',
+		days: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+    	daysShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+    	daysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+    	months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    	monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+    	weekStart: 1,
+    	startView: 0,
+    	yearFirst: false,
+    	yearSuffix: ''
+
+	});
+});
+
+  </script>
+
+
+{% endblock %}

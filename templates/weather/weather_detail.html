@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+<h2>{{info}}</h2>
+<h2>{{weather.city.all.first}}</h2>
+<h2>{{weather.in_date}}</h2>
+<h2>{{weather.in_time|time:"H:i"}}</h2>
+<h2>{{weather.temperature}}°C</h2>
+<h2><a href='{{weather.get_absolute_url}}update/'>Изменить температуру</h2>
+<h2><a href='{{weather.get_absolute_url}}delete/'>Удалить температуру</h2>
+<h2><a href='http://127.0.0.1:8000/weather/cities/{{city.id}}/{{date}}/'>Назад</h2>
+{% endblock content %}

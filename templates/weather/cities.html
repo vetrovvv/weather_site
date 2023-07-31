@@ -1,0 +1,83 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% load custom_filters %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+<h2 class="marg-bottom">Доступные города</h2>
+
+<h3>{{ time_now|date:'M d Y' }}</h3>
+
+<form method="GET" class="box1 ">
+	{{ filter.form }}
+	<input type="submit" value="Найти">
+
+
+
+
+<div class="cities_pag">
+{% for city in cities %}
+
+<h2><a href="{{city.get_absolute_url}}">{{city}}</a> {{city.weather_history.all.last.temperature}}°C</h2>
+
+{%endfor%}
+
+{%if 'city__icontains' not in request.build_absolute_uri %}
+{% if cities.has_other_pages %}
+<div class="container1">
+    	<ul class="pagination">
+    {% if cities.has_previous %}
+
+        <li><a href="?page=1">Первая</a></li>
+        <li><a href="?page={{ cities.previous_page_number }}"><<<</a></li>
+    {% endif %}
+    {% for num in cities.paginator.page_range %}
+        {% if cities.number == num %}
+            <li><a>{{ num }}</a></li>
+        {% elif num > cities.number|add:'-2' and num < cities.number|add:'2' %}
+            <li><a href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if cities.has_next %}
+        <li><a href="?page={{ cities.next_page_number }}">>>></a></li>
+        <li><a href="?page={{cities.paginator.num_pages }}">Последняя</a></li>
+    {% endif %}
+        </ul>
+    </div>
+{% endif %}
+
+
+{%else%}
+
+{% if cities.has_other_pages %}
+<div class="container1">
+    	<ul class="pagination">
+    {% if cities.has_previous %}
+
+        <li><a href="{{request.build_absolute_uri|path_without_pages}}&page=1">Первая</a></li>
+        <li><a href="{{request.build_absolute_uri|path_without_pages}}&page={{ cities.previous_page_number }}"><<<</a></li>
+    {% endif %}
+    {% for num in cities.paginator.page_range %}
+        {% if cities.number == num %}
+            <li><a>{{ num }}</a></li>
+        {% elif num > cities.number|add:'-2' and num < cities.number|add:'2' %}
+            <li><a href="{{request.build_absolute_uri|path_without_pages}}&page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if cities.has_next %}
+        <li><a href="{{request.build_absolute_uri|path_without_pages}}&page={{ cities.next_page_number }}">>>></a></li>
+        <li><a href="{{request.build_absolute_uri|path_without_pages}}&page={{cities.paginator.num_pages }}">Последняя</a></li>
+    {% endif %}
+        </ul>
+    </div>
+
+{% endif %}
+
+{%endif%}
+
+</div>
+<a class="main_menu_a" href="{% url 'city_create' %}">Вашего города нет в списке?</a>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+
+<h2>Внимание! При изменении названия города на другое, данные о температуре удалятся! Сбор данных начнентся заново,иначе информация будет недостоверна!</h2>
+<h3>{{ time_now|date:'M d Y' }}</h3>
+<hr>
+<form method="POST" class="box1">
+    {% csrf_token %} 
+    {{ form }} <!-- Теперь нам нужна только готовая форма и кнопка -->
+    <input type="submit" value="Внести изменения">
+</form>
+<h2><a href='http://127.0.0.1:8000/weather/cities/{{city.id}}/{{date}}/'>Назад</h2>
+{{error}}
+
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% load custom_filters %}
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+<h2 class="git">Введите новый показатель температуры для города {{city}} {{date|date_format}}</h2>
+<hr>
+
+<form class="box1" method="POST" >
+    {% csrf_token %} 
+    {{ form }}
+    <input type="submit" class="btn1" value="Сохранить"> <span class="white">{{error}}</span>
+</form>
+<h2><a href='http://127.0.0.1:8000/weather/cities/{{city.id}}/{{date}}/'>Назад</h2>
+<div>
+
+{% endblock content %}

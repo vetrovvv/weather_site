@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+
+<h2 class="git">Введите новый город</h2>
+<h3>{{ time_now|date:'M d Y' }}</h3>
+<hr>
+
+<form class="box1" method="POST" >
+    {% csrf_token %} 
+    {{ form }}
+    <input type="submit" class="btn1" value="Запросить погоду"> <span class="white">{{error}}</span>
+</form>
+<div>
+
+
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+
+<title>{% block title %}Города{% endblock title %}</title>
+
+
+{% block content %}
+<h2>{{weather.city.all.first}}</h2>
+<h2>{{weather.in_date}}</h2>
+<h2>{{weather.in_time|time:"H:i"}}</h2>
+<h2>{{weather.temperature}}°C</h2>
+
+
+<h2 class="mking">Вы действительно хотите удалить температуру?</h2>
+
+
+<form class="box1" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Подтвердить">
+</form>
+{% endblock content %}
